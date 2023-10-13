@@ -1,0 +1,16 @@
+database:
+  type: sqlite
+  # sqlite的path
+  path: plugins/GenshinDrawcard2/database.db
+  enable: true
+  host: localhost
+  port: 3306
+  user:
+  password:
+  database:
+  table: '抽卡详情'
+  #每10分钟同步一次 （tick）
+  user-container-sync-time: 1200
+
+options:
+  debug: false
