@@ -36,4 +36,7 @@ abstract class StarGradeContainerManager: Manager {
      *  随机出的 card
      */
     abstract fun randomCard (container: StarGradeContainer): Card?
+
+
+    abstract fun registerCard (container: StarGradeContainer, card: Card, weight: Int)
 }

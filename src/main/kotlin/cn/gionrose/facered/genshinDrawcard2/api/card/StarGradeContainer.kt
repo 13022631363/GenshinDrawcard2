@@ -16,12 +16,7 @@ class StarGradeContainer(val pool: CardPool, val grade: CardStarGrade)
     /**
      * 星级卡片容器中的每张卡片有且只有一张
      */
-    fun addCard (card: Card, weight: Int)
-    {
-        cards.takeIf { !cards.values().contains(RandomList.Value(card, weight)) }?.apply {
-            cards.add(card, weight)
-        }
-    }
+
 
     /**
      * 星级卡片容器的数量

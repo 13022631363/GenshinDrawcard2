@@ -225,7 +225,8 @@ object CardPoolManagerImpl: CardPoolManager () {
 
                 if (card.grade == container.element.grade)
                 {
-                    container.element.addCard(card, weight)
+                    GenshinDrawcard2.starGradeContainerManager.registerCard(container.element, card, weight)
+
                     debug {
                         console().sendLang("奖池_添加_卡片", card.key, container.element.grade.content)
                     }

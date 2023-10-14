@@ -2,7 +2,9 @@ package cn.gionrose.facered.genshinDrawcard2.internal.command
 
 import cn.gionrose.facered.genshinDrawcard2.GenshinDrawcard2
 import cn.gionrose.facered.genshinDrawcard2.api.card.Card
+import cn.gionrose.facered.genshinDrawcard2.api.card.CardStarGrade
 import cn.gionrose.facered.genshinDrawcard2.internal.feature.realizer.card.CardAnimationScreenRealizer
+import cn.gionrose.facered.genshinDrawcard2.internal.feature.realizer.card.CardDisplayScreenRealizer
 import cn.gionrose.facered.genshinDrawcard2.util.getPlayer
 import com.skillw.pouvoir.util.soundSuccess
 import org.bukkit.command.CommandSender
@@ -10,6 +12,7 @@ import org.bukkit.entity.Player
 import taboolib.common.platform.command.CommandBody
 import taboolib.common.platform.command.CommandHeader
 import taboolib.common.platform.command.subCommand
+import taboolib.common5.cint
 import taboolib.platform.util.onlinePlayers
 import taboolib.platform.util.sendLang
 
@@ -26,6 +29,39 @@ internal object GenshinDrawcard2Command {
             (sender as? Player?)?.soundSuccess()
             sender.sendLang("命令_重载")
             GenshinDrawcard2.reload()
+        }
+    }
+
+    @CommandBody (permission = "genshindrawcard2.command.preview")
+    val preview = subCommand {
+
+        dynamic("玩家名") {
+            suggestion<CommandSender> { _, _ ->
+                onlinePlayers.map { it.name }
+            }
+            dynamic("卡片池名") {
+                suggestion<Player>{_, _ ->
+                    GenshinDrawcard2.cardPoolManager.values.map { it.key }
+                }
+                dynamic("星级") {
+                    suggestion<Player>{_, _ ->
+                        CardStarGrade.values().map { it.level.toString() }
+                    }
+                    execute<Player>{_, context, _ ->
+                        val pool = GenshinDrawcard2.cardPoolManager[context["卡片池名"]]!!
+                        GenshinDrawcard2.starGradeContainerManager.getContainer(pool).values().forEach { container ->
+                            if (container.element.grade == CardStarGrade.getStarGrade(context["星级"].cint))
+                            {
+                                val cards = container.element.cards.values().map { it.element }.toMutableList()
+                                val cardDisplayScreenRealizer =
+                                    GenshinDrawcard2.realizerManager["展示界面实现器"]!! as CardDisplayScreenRealizer
+                                cardDisplayScreenRealizer.show(context["玩家名"].getPlayer()!!,pool, cards, "预览界面" )
+                                return@forEach
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 

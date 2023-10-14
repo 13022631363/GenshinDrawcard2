@@ -142,7 +142,14 @@ object ScreenManagerImpl: ScreenManager () {
                     "肥牛,card,card,card,card,card,card,card,肥牛," +
                     "肥牛,card,card,card,card,card,card,card,肥牛," +
                     "肥牛,card,card,card,card,card,card,card,肥牛," +
-                    "prev||肥猪||肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,next||肥猪||肥牛", "结算动画", pool))
+                    "prev||肥猪||肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,next||肥猪||肥牛", "结算界面", pool))
+            registerScreen(pool, Screen("预览界面", 6,
+                "肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛," +
+                        "肥牛,card,card,card,card,card,card,card,肥牛," +
+                        "肥牛,card,card,card,card,card,card,card,肥牛," +
+                        "肥牛,card,card,card,card,card,card,card,肥牛," +
+                        "肥牛,card,card,card,card,card,card,card,肥牛," +
+                        "prev||肥猪||肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,next||肥猪||肥牛", "预览界面", pool))
         }
 
     }

@@ -54,7 +54,7 @@ internal object CardAnimationScreenRealizer: BaseRealizer ("动画界面实现�
 
             if (index == displayScreen.size) {
                 this.cancel()
-                (GenshinDrawcard2.realizerManager["结算界面实现器"] as CardBillingScreenRealizer).show(player,pool, drawedCards )
+                (GenshinDrawcard2.realizerManager["展示界面实现器"] as CardDisplayScreenRealizer).show(player,pool, drawedCards, "结算界面" )
 
                 HandingOutCardEvent (player, drawedCards).call()
                 return@submit

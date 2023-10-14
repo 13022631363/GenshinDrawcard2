@@ -13,12 +13,12 @@ import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Linked
 
 /**
- * @description 抽卡结算界面实现器
+ * @description 抽卡预览 / 结算界面实现器
  * @author facered
  * @date 2023/10/12 21:58
  */
 @AutoRegister
-internal object CardBillingScreenRealizer: BaseRealizer("结算界面实现器"), Awakeable {
+internal object CardDisplayScreenRealizer: BaseRealizer("展示界面实现器"), Awakeable {
     override val file by lazy {
         GenshinDrawcard2.config.file!!
     }
@@ -26,9 +26,9 @@ internal object CardBillingScreenRealizer: BaseRealizer("结算界面实现器")
         GenshinDrawcard2.realizerManager
     }
 
-    fun show (player: Player, pool: CardPool, drawedCards: MutableList<Card>)
+    fun show (player: Player, pool: CardPool, drawedCards: MutableList<Card>, screenName: String)
     {
-        val billingScreen = GenshinDrawcard2.screenManager.parseLayout(pool, "结算动画")[0]
+        val billingScreen = GenshinDrawcard2.screenManager.parseLayout(pool, screenName)[0]
 
 
             player.openMenu<Linked<Card>>(billingScreen.title)
@@ -68,7 +68,7 @@ internal object CardBillingScreenRealizer: BaseRealizer("结算界面实现器")
                 }
 
                 onClose{
-                    GenshinDrawcard2.screenManager.releaseSlots(pool, "结算动画")
+                    GenshinDrawcard2.screenManager.releaseSlots(pool, "结算界面")
                 }
             }
 

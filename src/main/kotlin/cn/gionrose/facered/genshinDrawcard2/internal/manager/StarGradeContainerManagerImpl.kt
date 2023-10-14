@@ -80,12 +80,24 @@ object StarGradeContainerManagerImpl: StarGradeContainerManager() {
         return container.upRandom ()
     }
 
+    override fun registerCard(container: StarGradeContainer, card: Card, weight: Int) {
+        container.addCard(card, weight)
+    }
+
+
     //------------------------------------------------------------------------------------
     //                          星级池的拓展函数
     //------------------------------------------------------------------------------------
     private fun StarGradeContainer.random (): Card?
     {
         return cards.random()
+    }
+
+    private fun StarGradeContainer.addCard (card: Card, weight: Int)
+    {
+        cards.takeIf { !cards.values().contains(RandomList.Value(card, weight)) }?.apply {
+            cards.add(card, weight)
+        }
     }
 
     private fun StarGradeContainer.upRandom (): Card?
