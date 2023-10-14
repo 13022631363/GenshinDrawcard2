@@ -66,6 +66,29 @@ internal object GenshinDrawcard2Command {
         }
     }
 
+    @CommandBody (permission = "genshindrawcard2.command.preview")
+    val record = subCommand {
+
+        dynamic("玩家名") {
+            suggestion<CommandSender> { _, _ ->
+                onlinePlayers.map { it.name }
+            }
+            dynamic("卡片池名") {
+                suggestion<Player> { _, _ ->
+                    GenshinDrawcard2.cardPoolManager.values.map { it.key }
+                }
+                execute<Player>{_, context, _ ->
+                    val player = context["玩家名"].getPlayer()!!
+                    val records = GenshinDrawcard2.cardDrawDetailManager.getCardRecord(player.uniqueId).toMutableList()
+                    val pool = GenshinDrawcard2.cardPoolManager[context["卡片池名"]]!!
+                    val cardDisplayScreenRealizer =
+                        GenshinDrawcard2.realizerManager["展示界面实现器"]!! as CardDisplayScreenRealizer
+                    cardDisplayScreenRealizer.show(player,pool , records, "抽卡记录")
+                }
+            }
+        }
+    }
+
     @CommandBody(permission = "genshindrawcard2.command.draw")
     val draw = subCommand {
 

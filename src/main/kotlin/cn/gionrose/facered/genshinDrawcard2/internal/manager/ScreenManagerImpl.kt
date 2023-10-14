@@ -150,6 +150,13 @@ object ScreenManagerImpl: ScreenManager () {
                         "肥牛,card,card,card,card,card,card,card,肥牛," +
                         "肥牛,card,card,card,card,card,card,card,肥牛," +
                         "prev||肥猪||肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,next||肥猪||肥牛", "预览界面", pool))
+            registerScreen(pool, Screen("抽卡记录界面", 6,
+                "肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛," +
+                        "肥牛,card,card,card,card,card,card,card,肥牛," +
+                        "肥牛,card,card,card,card,card,card,card,肥牛," +
+                        "肥牛,card,card,card,card,card,card,card,肥牛," +
+                        "肥牛,card,card,card,card,card,card,card,肥牛," +
+                        "prev||肥猪||肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,next||肥猪||肥牛", "抽卡记录", pool))
         }
 
     }
