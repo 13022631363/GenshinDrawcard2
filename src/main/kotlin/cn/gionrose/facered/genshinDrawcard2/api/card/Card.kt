@@ -2,13 +2,13 @@ package cn.gionrose.facered.genshinDrawcard2.api.card
 
 import cn.gionrose.facered.genshinDrawcard2.GenshinDrawcard2
 import cn.gionrose.facered.genshinDrawcard2.api.card.CardStarGrade.THREE_STAR
-import cn.gionrose.facered.genshinDrawcard2.util.deserializeF
-import cn.gionrose.facered.genshinDrawcard2.util.serializeF
 import com.skillw.pouvoir.api.plugin.map.component.Registrable
 import org.bukkit.inventory.ItemStack
 import taboolib.common5.cbool
 import taboolib.library.xseries.XMaterial
 import taboolib.platform.util.buildItem
+import taboolib.platform.util.deserializeToItemStack
+import taboolib.platform.util.serializeToByteArray
 
 /**
  * @description 卡片
@@ -30,9 +30,10 @@ class Card private constructor(
     {
         return mutableMapOf<String, Any>().apply {
             put("cardName", key)
-            put("source", source.serializeF())
+            put("source", source.serializeToByteArray())
             put ("isUp", isUp)
             put ("grade", grade.name)
+
         }
     }
     override fun register() {
@@ -99,7 +100,7 @@ class Card private constructor(
         fun deserialize (item: Map<String, Any>): Card
         {
             val key = item["cardName"].toString()
-            val source = (item["source"] as Map<String, Any>).deserializeF()
+            val source = (item["source"] as ArrayList<Byte>).toByteArray().deserializeToItemStack()
             val isUp = item["isUp"].cbool
             val grade = CardStarGrade.valueOf (item["grade"].toString())
 

@@ -22,7 +22,7 @@ class CardDrawDetail: LowerMap<Any>() {
         this["四星大保底触发"] = false
         this["五星大保底触发"] = false
         this["抽卡总次数"] = 0
-        this["抽卡记录"] = arrayListOf<Card>()
+        this["抽卡记录"] = mutableListOf<Card>()
     }
 
     fun serialize (): Map<String, Any>
@@ -38,7 +38,7 @@ class CardDrawDetail: LowerMap<Any>() {
         result["四星大保底触发"] = this["四星大保底触发"]!!
         result["五星大保底触发"] = this["五星大保底触发"]!!
         result["抽卡总次数"] = this["抽卡总次数"]!!
-        result["抽卡记录"] = (this["抽卡记录"] as ArrayList<Card>).map { it.serialize() }
+        result["抽卡记录"] = (this["抽卡记录"] as List<Card>).map { it.serialize() }
 
         //todo
         result.forEach { t, u ->
@@ -59,7 +59,7 @@ class CardDrawDetail: LowerMap<Any>() {
         "四星大保底触发 -> ${get("四星大保底触发")}" +
         "五星大保底触发 -> ${get("五星大保底触发")}" +
         "抽卡总次数 -> ${get("抽卡总次数")}" +
-        "抽卡记录 -> ${(get("抽卡记录")as ArrayList<Card>).map { it.key }}"
+        "抽卡记录 -> ${(get("抽卡记录")as List<Card>).map { it.key }}"
 
     }
 
@@ -80,6 +80,7 @@ class CardDrawDetail: LowerMap<Any>() {
                 this["五星大保底触发"] = detail["五星大保底触发"]!!
                 this["抽卡总次数"] = detail["抽卡总次数"]!!
                 this["抽卡记录"] = (detail["抽卡记录"] as List<Map<String, Any>>).map { Card.deserialize(it) }
+
             }
             println(result)
             return result
