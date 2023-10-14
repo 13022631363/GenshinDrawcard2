@@ -2,9 +2,10 @@ package cn.gionrose.facered.genshinDrawcard2.api.manager
 
 import cn.gionrose.facered.genshinDrawcard2.api.card.Card
 import cn.gionrose.facered.genshinDrawcard2.api.card.CardPool
+import cn.gionrose.facered.genshinDrawcard2.api.card.CardStarGrade
+import cn.gionrose.facered.genshinDrawcard2.api.card.StarGradeContainer
 import com.skillw.pouvoir.api.manager.Manager
 import com.skillw.pouvoir.api.plugin.map.LowerKeyMap
-import java.util.*
 
 
 /**
@@ -51,11 +52,9 @@ abstract class CardPoolManager: LowerKeyMap<CardPool>(), Manager
      */
     abstract fun registerCard (pool: CardPool, card: List<Card>, weight: Int): CardPool
 
-    /**
-     * 抽卡
-     */
-    abstract fun draw (poolName: String, uuid: UUID): Card?
 
+    abstract fun random (pool: CardPool, grade: CardStarGrade, isUpRandom: Boolean): Card?
 
+    abstract fun randomStarGradeContainer(pool: CardPool): StarGradeContainer?
 
 }

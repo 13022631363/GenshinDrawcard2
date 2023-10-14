@@ -5,6 +5,7 @@ import cn.gionrose.facered.genshinDrawcard2.api.card.Card
 import cn.gionrose.facered.genshinDrawcard2.api.card.CardStarGrade
 import cn.gionrose.facered.genshinDrawcard2.internal.feature.realizer.card.CardAnimationScreenRealizer
 import cn.gionrose.facered.genshinDrawcard2.internal.feature.realizer.card.CardDisplayScreenRealizer
+import cn.gionrose.facered.genshinDrawcard2.internal.feature.realizer.card.DrawCardRealizer
 import cn.gionrose.facered.genshinDrawcard2.util.getPlayer
 import com.skillw.pouvoir.util.soundSuccess
 import org.bukkit.command.CommandSender
@@ -84,7 +85,8 @@ internal object GenshinDrawcard2Command {
 
                            for (count in 0 until context["抽卡次数"].toInt ())
                            {
-                               GenshinDrawcard2.cardPoolManager.draw("基础奖池", player.uniqueId)?.let {
+
+                               (GenshinDrawcard2.realizerManager["抽卡实现器"] as DrawCardRealizer).draw("基础奖池", player.uniqueId)?.let {
                                    drawedCards.add(it)
                                    println("抽卡结果 => ${it.key}")
                                }

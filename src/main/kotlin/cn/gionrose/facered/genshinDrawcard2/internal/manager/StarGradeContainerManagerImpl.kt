@@ -90,6 +90,8 @@ object StarGradeContainerManagerImpl: StarGradeContainerManager() {
     //------------------------------------------------------------------------------------
     private fun StarGradeContainer.random (): Card?
     {
+        if (cards.size() == 0 )
+            console().sendLang("星级卡片池_长度是0", this.pool.key, this.grade.content)
         return cards.random()
     }
 
