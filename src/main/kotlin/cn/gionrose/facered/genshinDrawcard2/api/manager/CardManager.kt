@@ -1,8 +1,10 @@
 package cn.gionrose.facered.genshinDrawcard2.api.manager
 
 import cn.gionrose.facered.genshinDrawcard2.api.card.Card
+import cn.gionrose.facered.genshinDrawcard2.api.card.CardStarGrade
 import com.skillw.pouvoir.api.manager.Manager
 import com.skillw.pouvoir.api.plugin.map.LowerKeyMap
+import org.bukkit.inventory.ItemStack
 
 
 /**
@@ -44,5 +46,11 @@ abstract class CardManager: LowerKeyMap<Card>(), Manager
      * 通过卡片名 获取卡片
      */
     abstract fun getCard (cardName: String): Card?
+
+    abstract fun createCard (key: String,
+                             source: ItemStack,
+                             isUp: Boolean = false,
+                             grade: CardStarGrade = CardStarGrade.THREE_STAR
+    ): Card
 }
 

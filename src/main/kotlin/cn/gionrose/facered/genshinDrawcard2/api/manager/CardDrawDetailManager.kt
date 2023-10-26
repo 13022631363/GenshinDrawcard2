@@ -19,7 +19,7 @@ abstract class CardDrawDetailManager: BaseMap<UUID, CardDrawDetail> (), Manager 
 
     abstract fun setTriggerBigGuarantee (uuid: UUID, detailName: String, isTrigger: Boolean)
 
-    abstract fun addCardRecord (uuid: UUID, card: Card, beforeRecord: Card.() -> Unit)
+    abstract fun addCardRecord (uuid: UUID, card: Card)
 
     abstract fun getCount (uuid: UUID, detailName: String): Int
 

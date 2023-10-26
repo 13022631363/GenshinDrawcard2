@@ -15,7 +15,7 @@ abstract class ScreenManager: BaseMap<CardPool, MutableMap<String, MutableList<S
     /**
      * 往 screenManager 中指定 pool 注册一个 screen
      */
-    abstract fun registerScreen(pool: CardPool, screen: Screen)
+    abstract fun registerScreen(screen: Screen)
 
     /**
      * 从 screenManager 中指定 pool 注销一个 screen
@@ -42,4 +42,5 @@ abstract class ScreenManager: BaseMap<CardPool, MutableMap<String, MutableList<S
      */
     abstract fun releaseSlots (pool: CardPool, screenName: String)
 
+    abstract fun createScreen (pool: CardPool, title: String, row: Int, layout: String, key: String): Screen
 }

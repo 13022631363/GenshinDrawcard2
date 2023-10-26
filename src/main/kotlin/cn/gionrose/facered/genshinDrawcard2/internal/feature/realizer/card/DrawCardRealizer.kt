@@ -4,6 +4,7 @@ import cn.gionrose.facered.genshinDrawcard2.GenshinDrawcard2
 import cn.gionrose.facered.genshinDrawcard2.api.card.Card
 import cn.gionrose.facered.genshinDrawcard2.api.card.CardPool
 import cn.gionrose.facered.genshinDrawcard2.api.card.CardStarGrade
+import cn.gionrose.facered.genshinDrawcard2.api.event.RecordCardEvent
 import com.skillw.pouvoir.api.feature.realizer.BaseRealizer
 import com.skillw.pouvoir.api.feature.realizer.BaseRealizerManager
 import com.skillw.pouvoir.api.plugin.annotation.AutoRegister
@@ -84,12 +85,10 @@ internal object DrawCardRealizer: BaseRealizer ("抽卡实现器") {
             GenshinDrawcard2.cardDrawDetailManager.addCount(uuid, smallGuaranteeDetailName,1)
             GenshinDrawcard2.cardDrawDetailManager.addCount(uuid, countDetailName,1)
             GenshinDrawcard2.cardDrawDetailManager.addCount(uuid, "抽卡总次数", 1)
-            //todo
-            GenshinDrawcard2.cardDrawDetailManager.addCardRecord(uuid, it.clone()){
-                val itemMeta = source.itemMeta!!
-                itemMeta.lore = listOf("${System.currentTimeMillis()}")
-                source.itemMeta = itemMeta
-            }
+
+            val recordCardEvent = RecordCardEvent (it.clone ())
+            recordCardEvent.call()
+            GenshinDrawcard2.cardDrawDetailManager.addCardRecord(uuid,recordCardEvent.recordCard)
         }
     }
 

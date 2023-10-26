@@ -2,9 +2,11 @@ package cn.gionrose.facered.genshinDrawcard2.internal.manager
 
 import cn.gionrose.facered.genshinDrawcard2.GenshinDrawcard2
 import cn.gionrose.facered.genshinDrawcard2.api.card.Card
+import cn.gionrose.facered.genshinDrawcard2.api.card.CardStarGrade
 import cn.gionrose.facered.genshinDrawcard2.api.event.CardLoadEvent
 import cn.gionrose.facered.genshinDrawcard2.api.manager.CardManager
 import cn.gionrose.facered.genshinDrawcard2.internal.manager.GenshinDrawcard2ConfigManagerImpl.debug
+import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.console
 import taboolib.module.lang.sendError
 import taboolib.module.lang.sendLang
@@ -20,6 +22,8 @@ object CardManagerImpl: CardManager() {
     override val priority = 2
 
     override val subPouvoir = GenshinDrawcard2
+
+
 
     override fun registerCard(card: List<Card>) {
         card.forEach (::register)
@@ -45,11 +49,15 @@ object CardManagerImpl: CardManager() {
         return this[cardName]
     }
 
+    override fun createCard(key: String, source: ItemStack, isUp: Boolean, grade: CardStarGrade): Card {
+        return Card.createCard(key, source, isUp, grade)
+    }
+
     //------------------------------------------------------------------------------------
     //                          卡片管理器的调用周期
     //------------------------------------------------------------------------------------
 
-    override fun onEnable() {
+    override fun onActive() {
         val cardLoadEvent = CardLoadEvent (ArrayList ())
         cardLoadEvent.call()
         if (cardLoadEvent.isCancelled)
@@ -59,7 +67,7 @@ object CardManagerImpl: CardManager() {
     }
 
     override fun onReload() {
-        onEnable()
+        onActive()
     }
 
 

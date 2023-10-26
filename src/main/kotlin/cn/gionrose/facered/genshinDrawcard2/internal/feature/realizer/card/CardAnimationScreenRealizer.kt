@@ -7,7 +7,6 @@ import cn.gionrose.facered.genshinDrawcard2.api.event.HandingOutCardEvent
 import cn.gionrose.facered.genshinDrawcard2.util.getMaxGrade
 import com.skillw.pouvoir.api.feature.realizer.BaseRealizer
 import com.skillw.pouvoir.api.feature.realizer.BaseRealizerManager
-import com.skillw.pouvoir.api.feature.realizer.component.Awakeable
 import com.skillw.pouvoir.api.plugin.annotation.AutoRegister
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.console
@@ -24,7 +23,7 @@ import taboolib.module.ui.type.Linked
  */
 
 @AutoRegister
-internal object CardAnimationScreenRealizer: BaseRealizer ("动画界面实现器"), Awakeable {
+internal object CardAnimationScreenRealizer: BaseRealizer ("动画界面实现器") {
 
     override val file by lazy {
         GenshinDrawcard2.config.file!!

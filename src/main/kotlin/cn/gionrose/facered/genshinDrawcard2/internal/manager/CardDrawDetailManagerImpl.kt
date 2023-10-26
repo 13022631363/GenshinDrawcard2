@@ -38,10 +38,10 @@ object CardDrawDetailManagerImpl: CardDrawDetailManager() {
         this[uuid][detailName] = isTrigger
     }
 
-    override fun addCardRecord(uuid: UUID, card: Card, beforeRecord: Card.() -> Unit) {
+    override fun addCardRecord(uuid: UUID, card: Card) {
         val record = this[uuid]["抽卡记录"] as MutableList<Card>
 
-        record.add(card.apply(beforeRecord))
+        record.add(card)
     }
 
     override fun getCount(uuid: UUID, detailName: String): Int {

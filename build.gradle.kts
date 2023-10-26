@@ -41,7 +41,9 @@ taboolib {
         "module-configuration",
         "module-chat",
         "module-lang",
-        "module-ui"
+        "module-ui",
+        "expansion-player-database",
+        "module-database"
     )
     description {
         contributors {

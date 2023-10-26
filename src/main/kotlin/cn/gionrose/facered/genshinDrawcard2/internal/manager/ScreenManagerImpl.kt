@@ -4,6 +4,7 @@ import cn.gionrose.facered.genshinDrawcard2.GenshinDrawcard2
 import cn.gionrose.facered.genshinDrawcard2.api.card.Card
 import cn.gionrose.facered.genshinDrawcard2.api.card.CardPool
 import cn.gionrose.facered.genshinDrawcard2.api.card.Screen
+import cn.gionrose.facered.genshinDrawcard2.api.event.ScreenLoadEvent
 import cn.gionrose.facered.genshinDrawcard2.api.manager.ScreenManager
 import cn.gionrose.facered.genshinDrawcard2.internal.manager.GenshinDrawcard2ConfigManagerImpl.debug
 import taboolib.common.platform.function.console
@@ -21,18 +22,19 @@ object ScreenManagerImpl: ScreenManager () {
     override val priority = 4
 
     override val subPouvoir = GenshinDrawcard2
-    override fun registerScreen(pool: CardPool, screen: Screen) {
-        computeIfAbsent(pool) { mutableMapOf() }.computeIfAbsent(screen.key){ mutableListOf()}.add(screen)
+    override fun registerScreen(screen: Screen) {
+        computeIfAbsent(screen.pool) { mutableMapOf() }.computeIfAbsent(screen.key){ mutableListOf()}.add(screen)
         debug{
-            console().sendLang("界面_添加", screen.key, pool.key)
+            console().sendLang("界面_添加", screen.key, screen.pool.key)
         }
     }
 
     override fun unregisterScreen(pool: CardPool, screenName: String) {
-        this[pool]?.let {
-            if (it.remove(screenName) == null) debug {
-                console().sendLang("界面_移除", screenName, pool.key)
-            }
+        this.forEach { itPool, screens ->
+            if (pool.key == itPool.key)
+                if (this.remove(itPool) != null)debug {
+                    console().sendLang("界面_移除", screenName, pool.key)
+                }
         }
     }
 
@@ -66,6 +68,10 @@ object ScreenManagerImpl: ScreenManager () {
 
     override fun releaseSlots(pool: CardPool, screenName: String) {
         getScreen(pool, screenName).onEach {it.releaseSlots()}
+    }
+
+    override fun createScreen(pool: CardPool, title: String, row: Int, layout: String, key: String): Screen {
+        return Screen (title, row, layout, key, pool)
     }
 
 
@@ -103,6 +109,9 @@ object ScreenManagerImpl: ScreenManager () {
                 screenLayoutGetCardFromCardManager(this.key, name.split("||")[1])?.also { this.prevButton[index] = it }
                 //replacePrevButton
                 screenLayoutGetCardFromCardManager(this.key, name.split("||")[2])?.also { this.replacePrevButton[index] = it }
+            }else if (name.isBlank() || name.isEmpty())
+            {
+
             }else
                 screenLayoutGetCardFromCardManager(this.key, name)?.let { this.fixedSettingButtons[index] = it }
         }
@@ -123,48 +132,51 @@ object ScreenManagerImpl: ScreenManager () {
     //                          临时
     //------------------------------------------------------------------------------------
 
-    override fun onEnable() {
-        val pool = GenshinDrawcard2.cardPoolManager["基础奖池"]!!
-        GenshinDrawcard2.screenManager.apply {
-            registerScreen(pool, Screen("1", 6,"肥牛", "三星_展示动画", pool))
-            registerScreen(pool, Screen("2", 6,"肥牛,肥牛", "三星_展示动画", pool))
-            registerScreen(pool, Screen("3", 6,"肥牛,肥牛,肥牛", "三星_展示动画", pool))
-            registerScreen(pool, Screen("-", 6,"肥牛,肥牛", "四星_展示动画", pool))
-            registerScreen(pool, Screen("--", 6,"肥牛,肥牛,肥牛,肥牛", "四星_展示动画", pool))
-            registerScreen(pool, Screen("---", 6,"肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛", "四星_展示动画", pool))
-            registerScreen(pool, Screen(">", 6,"肥牛,肥牛,肥牛,肥牛", "五星_展示动画", pool))
-            registerScreen(pool, Screen(">>", 6,"肥牛,肥牛,肥牛,肥牛,肥牛,肥牛", "五星_展示动画", pool))
-            registerScreen(pool, Screen(">>>", 6,"肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛", "五星_展示动画", pool))
-
-            registerScreen(pool, Screen("结算界面", 6,
-                "肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛," +
-                    "肥牛,card,card,card,card,card,card,card,肥牛," +
-                    "肥牛,card,card,card,card,card,card,card,肥牛," +
-                    "肥牛,card,card,card,card,card,card,card,肥牛," +
-                    "肥牛,card,card,card,card,card,card,card,肥牛," +
-                    "prev||肥猪||肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,next||肥猪||肥牛", "结算界面", pool))
-            registerScreen(pool, Screen("预览界面", 6,
-                "肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛," +
-                        "肥牛,card,card,card,card,card,card,card,肥牛," +
-                        "肥牛,card,card,card,card,card,card,card,肥牛," +
-                        "肥牛,card,card,card,card,card,card,card,肥牛," +
-                        "肥牛,card,card,card,card,card,card,card,肥牛," +
-                        "prev||肥猪||肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,next||肥猪||肥牛", "预览界面", pool))
-            registerScreen(pool, Screen("抽卡记录界面", 6,
-                "肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛," +
-                        "肥牛,card,card,card,card,card,card,card,肥牛," +
-                        "肥牛,card,card,card,card,card,card,card,肥牛," +
-                        "肥牛,card,card,card,card,card,card,card,肥牛," +
-                        "肥牛,card,card,card,card,card,card,card,肥牛," +
-                        "prev||肥猪||肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,next||肥猪||肥牛", "抽卡记录", pool))
-        }
+    override fun onActive() {
+        ScreenLoadEvent ().call()
+        var screenManager = GenshinDrawcard2.screenManager
+//        GenshinDrawcard2.screenManager.apply {
+//            registerScreen(pool, Screen("1", 6,"肥牛", "三星_展示动画", pool))
+//            registerScreen(pool, Screen("2", 6,"肥牛,肥牛", "三星_展示动画", pool))
+//            registerScreen(pool, Screen("3", 6,"肥牛,肥牛,肥牛", "三星_展示动画", pool))
+//            registerScreen(pool, Screen("-", 6,"肥牛,肥牛", "四星_展示动画", pool))
+//            registerScreen(pool, Screen("--", 6,"肥牛,肥牛,肥牛,肥牛", "四星_展示动画", pool))
+//            registerScreen(pool, Screen("---", 6,"肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛", "四星_展示动画", pool))
+//            registerScreen(pool, Screen(">", 6,"肥牛,肥牛,肥牛,肥牛", "五星_展示动画", pool))
+//            registerScreen(pool, Screen(">>", 6,"肥牛,肥牛,肥牛,肥牛,肥牛,肥牛", "五星_展示动画", pool))
+//            registerScreen(pool, Screen(">>>", 6,"肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛", "五星_展示动画", pool))
+//
+//            registerScreen(pool, Screen("结算界面", 6,
+//                "肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛," +
+//                    "肥牛,card,card,card,card,card,card,card,肥牛," +
+//                    "肥牛,card,card,card,card,card,card,card,肥牛," +
+//                    "肥牛,card,card,card,card,card,card,card,肥牛," +
+//                    "肥牛,card,card,card,card,card,card,card,肥牛," +
+//                    "prev||肥猪||肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,next||肥猪||肥牛", "结算界面", pool))
+//            registerScreen(Screen("预览界面", 6,
+//                "肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛," +
+//                        "肥牛,card,card,card,card,card,card,card,肥牛," +
+//                        "肥牛,card,card,card,card,card,card,card,肥牛," +
+//                        "肥牛,card,card,card,card,card,card,card,肥牛," +
+//                        "肥牛,card,card,card,card,card,card,card,肥牛," +
+//                        "prev||肥猪||肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,next||肥猪||肥牛", "预览界面", pool))
+//            registerScreen(pool, Screen("抽卡记录界面", 6,
+//                "肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛," +
+//                        "肥牛,card,card,card,card,card,card,card,肥牛," +
+//                        "肥牛,card,card,card,card,card,card,card,肥牛," +
+//                        "肥牛,card,card,card,card,card,card,card,肥牛," +
+//                        "肥牛,card,card,card,card,card,card,card,肥牛," +
+//                        "prev||肥猪||肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,肥牛,next||肥猪||肥牛", "抽卡记录", pool))
+//        }
 
     }
 
     override fun onReload() {
-        GenshinDrawcard2.screenManager.unregisterScreen(GenshinDrawcard2.cardPoolManager["基础奖池"]!!, "展示动画")
+        GenshinDrawcard2.cardPoolManager.forEach { (_, pool) ->
+            GenshinDrawcard2.screenManager.releaseAllScreen(pool)
+        }
 
-        onEnable()
+        onActive()
     }
 
 

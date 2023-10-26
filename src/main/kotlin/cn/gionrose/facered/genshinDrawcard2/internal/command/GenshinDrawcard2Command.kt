@@ -3,6 +3,7 @@ package cn.gionrose.facered.genshinDrawcard2.internal.command
 import cn.gionrose.facered.genshinDrawcard2.GenshinDrawcard2
 import cn.gionrose.facered.genshinDrawcard2.api.card.Card
 import cn.gionrose.facered.genshinDrawcard2.api.card.CardStarGrade
+import cn.gionrose.facered.genshinDrawcard2.internal.feature.compat.NeigeItemHook
 import cn.gionrose.facered.genshinDrawcard2.internal.feature.realizer.card.CardAnimationScreenRealizer
 import cn.gionrose.facered.genshinDrawcard2.internal.feature.realizer.card.CardDisplayScreenRealizer
 import cn.gionrose.facered.genshinDrawcard2.internal.feature.realizer.card.DrawCardRealizer
@@ -138,6 +139,12 @@ internal object GenshinDrawcard2Command {
             (sender as? Player?)?.soundSuccess()
             GenshinDrawcard2.configManager.debugMode = !GenshinDrawcard2.configManager.debugMode
             sender.sendLang("command-debug-${if (GenshinDrawcard2.configManager.debugMode) "on" else "off"}")
+        }
+    }
+    @CommandBody(permission = "genshindrawcard2.command.debug")
+    val get = subCommand {
+        execute<CommandSender>{sender, _, _ ->
+            (sender as Player).inventory.addItem((GenshinDrawcard2.realizerManager["neigeItemHook"] as NeigeItemHook).getNeigeItem("ActionTest"))
         }
     }
 }

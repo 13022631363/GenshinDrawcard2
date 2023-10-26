@@ -66,6 +66,22 @@ object CardPoolManagerImpl: CardPoolManager () {
         return GenshinDrawcard2.starGradeContainerManager.randomStarGradeContainer(pool)
     }
 
+    override fun createCardPool(
+        key: String,
+        threeStarWeight: Int,
+        fourStarWeight: Int,
+        fiveStarWeight: Int,
+        threeSmallGuaranteeCount: Int,
+        fourSmallGuaranteeCount: Int,
+        fiveSmallGuaranteeCount: Int,
+        isEnabledThreeStarBigGuarantee: Boolean,
+        isEnabledFourStarBigGuarantee: Boolean,
+        isEnabledFiveStarBigGuarantee: Boolean,
+        period: Long
+    ): CardPool {
+        return CardPool.create(key, threeStarWeight, fourStarWeight, fiveStarWeight, threeSmallGuaranteeCount, fourSmallGuaranteeCount, fiveSmallGuaranteeCount, isEnabledThreeStarBigGuarantee, isEnabledFourStarBigGuarantee, isEnabledFiveStarBigGuarantee, period)
+    }
+
 
     //------------------------------------------------------------------------------------
     //                          抽卡管理器的调用周期
@@ -73,7 +89,7 @@ object CardPoolManagerImpl: CardPoolManager () {
 
 
 
-    override fun onEnable() {
+    override fun onActive() {
 
         registerPoolByListener ()
 
@@ -99,7 +115,7 @@ object CardPoolManagerImpl: CardPoolManager () {
     }
 
     override fun onReload() {
-        onEnable()
+        onActive()
     }
 
 

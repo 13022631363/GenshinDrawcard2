@@ -57,4 +57,17 @@ abstract class CardPoolManager: LowerKeyMap<CardPool>(), Manager
 
     abstract fun randomStarGradeContainer(pool: CardPool): StarGradeContainer?
 
+    abstract fun createCardPool (key: String,
+                                 threeStarWeight: Int,
+                                 fourStarWeight: Int,
+                                 fiveStarWeight: Int,
+                                 threeSmallGuaranteeCount: Int,
+                                 fourSmallGuaranteeCount: Int,
+                                 fiveSmallGuaranteeCount: Int,
+                                 isEnabledThreeStarBigGuarantee: Boolean,
+                                 isEnabledFourStarBigGuarantee: Boolean,
+                                 isEnabledFiveStarBigGuarantee: Boolean,
+                                 period: Long): CardPool
+
+
 }

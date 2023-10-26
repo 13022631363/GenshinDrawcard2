@@ -24,7 +24,7 @@ internal object GenshinDrawcard2Container: UserBased {
     @Awake(LifeCycle.ENABLE)
     fun loadContainer() {
         kotlin.runCatching {
-            container = (holder?.container("抽卡详情", true) as? UserBased?)!!
+            container = holder?.container("抽卡详情", true)!! as UserBased
         }.let {
             if (it.isFailure)
                 taboolib.common.platform.function.warning("抽卡 玩家存储信息容器初始化失败!")

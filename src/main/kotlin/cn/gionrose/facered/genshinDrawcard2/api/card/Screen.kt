@@ -35,7 +35,7 @@ class Screen (val title: String, val row: Int, val layout: String, override val 
     val fixedSettingButtons = mutableMapOf<Int, Card>()
 
     override fun register() {
-        GenshinDrawcard2.screenManager.registerScreen (pool, this)
+        GenshinDrawcard2.screenManager.registerScreen (this)
     }
 
 }

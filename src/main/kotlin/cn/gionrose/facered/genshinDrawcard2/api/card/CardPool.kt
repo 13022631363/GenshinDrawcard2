@@ -75,6 +75,31 @@ class CardPool private constructor(override val key: String,
         {
             return Builder (key, init).builder ()
         }
+        fun create (key: String,
+                    threeStarWeight: Int,
+                    fourStarWeight: Int,
+                    fiveStarWeight: Int,
+                    threeSmallGuaranteeCount: Int,
+                    fourSmallGuaranteeCount: Int,
+                    fiveSmallGuaranteeCount: Int,
+                    isEnabledThreeStarBigGuarantee: Boolean,
+                    isEnabledFourStarBigGuarantee: Boolean,
+                    isEnabledFiveStarBigGuarantee: Boolean,
+                    period: Long): CardPool
+        {
+            return Builder (key){
+                this.threeStarWeight = threeStarWeight
+                this.fiveStarWeight = fiveStarWeight
+                this.fourStarWeight = fourStarWeight
+                this.threeSmallGuaranteeCount = threeSmallGuaranteeCount
+                this.fourSmallGuaranteeCount = fourSmallGuaranteeCount
+                this.fiveSmallGuaranteeCount = fiveSmallGuaranteeCount
+                this.isEnabledFourStarBigGuarantee = isEnabledFourStarBigGuarantee
+                this.isEnabledThreeStarBigGuarantee = isEnabledThreeStarBigGuarantee
+                this.isEnabledFiveStarBigGuarantee = isEnabledFiveStarBigGuarantee
+                this.period = period
+            }.builder()
+        }
     }
 
 
