@@ -1,7 +1,6 @@
 package cn.gionrose.facered.genshinDrawcard2.internal.manager
 
 import cn.gionrose.facered.genshinDrawcard2.GenshinDrawcard2
-import cn.gionrose.facered.genshinDrawcard2.api.card.Card
 import cn.gionrose.facered.genshinDrawcard2.api.card.CardDrawDetail
 import cn.gionrose.facered.genshinDrawcard2.api.manager.CardDrawDetailManager
 import cn.gionrose.facered.genshinDrawcard2.internal.manager.GenshinDrawcard2ConfigManagerImpl.debug
@@ -24,36 +23,52 @@ object CardDrawDetailManagerImpl: CardDrawDetailManager() {
     override val priority = 2
 
     override val subPouvoir = GenshinDrawcard2
-    override fun addCount(uuid: UUID, detailName: String, count: Int) {
-        val amount = this[uuid][detailName].cint
-        this[uuid][detailName] = amount + count
+    override fun addCount(uuid: UUID, poolName: String, detailName: String, count: Int) {
+        this[uuid].forEach {
+            if (it.key == poolName)
+            {
+                val amount = it[detailName].cint
+                it[detailName] = amount + count
+            }
+        }
     }
 
-    override fun clearCount(uuid: UUID, detailName: String) {
-        val amount = this[uuid][detailName].cint
-        this[uuid][detailName] = 0
+    override fun clearCount(uuid: UUID, poolName: String, detailName: String) {
+        this[uuid].forEach {
+            if (it.key == poolName)
+            {
+                it[detailName] = 0
+            }
+        }
     }
 
-    override fun setTriggerBigGuarantee(uuid: UUID, detailName: String, isTrigger: Boolean) {
-        this[uuid][detailName] = isTrigger
+    override fun setTriggerBigGuarantee(uuid: UUID, poolName: String, detailName: String, isTrigger: Boolean) {
+        this[uuid].forEach {
+            if (it.key == poolName)
+            {
+                it[detailName] = isTrigger
+            }
+        }
     }
 
-    override fun addCardRecord(uuid: UUID, card: Card) {
-        val record = this[uuid]["抽卡记录"] as MutableList<Card>
-
-        record.add(card)
+    override fun getCount(uuid: UUID, poolName: String, detailName: String): Int {
+        this[uuid].forEach {
+            if (it.key == poolName)
+            {
+                return it[detailName].cint
+            }
+        }
+        return -1
     }
 
-    override fun getCount(uuid: UUID, detailName: String): Int {
-        return this[uuid][detailName].cint
-    }
-
-    override fun isTriggerBigGuarantee(uuid: UUID, detailName: String): Boolean {
-        return this[uuid][detailName].cbool
-    }
-
-    override fun getCardRecord(uuid: UUID): List<Card> {
-        return this[uuid]["抽卡记录"] as List<Card>
+    override fun isTriggerBigGuarantee(uuid: UUID, poolName: String, detailName: String): Boolean {
+        this[uuid].forEach {
+            if (it.key == poolName)
+            {
+                return it[detailName].cbool
+            }
+        }
+        return false
     }
 
     override fun unregisterDetail(uuid: UUID) {
@@ -64,12 +79,12 @@ object CardDrawDetailManagerImpl: CardDrawDetailManager() {
     //                          重写父类
     //------------------------------------------------------------------------------------
 
-    override fun get(key: UUID): CardDrawDetail {
+    override fun get(key: UUID): MutableList<CardDrawDetail> {
 
-        return computeIfAbsent(key){CardDrawDetail ()}
+        return computeIfAbsent(key){ mutableListOf()}
     }
 
-    override fun remove(key: UUID): CardDrawDetail {
+    override fun remove(key: UUID): MutableList<CardDrawDetail> {
 
         val result = this[key]
         result.takeIf {it.isNotEmpty()}?.let { debug{

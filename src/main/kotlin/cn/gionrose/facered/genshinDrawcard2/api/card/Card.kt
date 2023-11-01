@@ -97,12 +97,12 @@ class Card private constructor(
         }
 
         @JvmStatic
-        fun deserialize (item: Map<String, Any>): Card
+        fun deserialize (card: Map<String, Any>): Card
         {
-            val key = item["cardName"].toString()
-            val source = (item["source"] as ArrayList<Byte>).toByteArray().deserializeToItemStack()
-            val isUp = item["isUp"].cbool
-            val grade = CardStarGrade.valueOf (item["grade"].toString())
+            val key = card["cardName"].toString()
+            val source = (card["source"] as ArrayList<Byte>).toByteArray().deserializeToItemStack()
+            val isUp = card["isUp"].cbool
+            val grade = CardStarGrade.valueOf (card["grade"].toString())
 
             return createCard(key, source, isUp, grade)
         }

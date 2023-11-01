@@ -5,12 +5,16 @@ import cn.gionrose.facered.genshinDrawcard2.api.card.Card
 import cn.gionrose.facered.genshinDrawcard2.api.card.CardPool
 import cn.gionrose.facered.genshinDrawcard2.api.card.CardStarGrade
 import cn.gionrose.facered.genshinDrawcard2.api.event.RecordCardEvent
+import cn.gionrose.facered.genshinDrawcard2.internal.feature.database.GenshinDrawCard2Database
 import com.skillw.pouvoir.api.feature.realizer.BaseRealizer
 import com.skillw.pouvoir.api.feature.realizer.BaseRealizerManager
 import com.skillw.pouvoir.api.plugin.annotation.AutoRegister
+import com.skillw.pouvoir.util.player
 import taboolib.common.platform.function.console
+import taboolib.common.platform.function.submit
 import taboolib.common.util.unsafeLazy
 import taboolib.module.lang.sendLang
+import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -29,12 +33,12 @@ internal object DrawCardRealizer: BaseRealizer ("抽卡实现器") {
     }
 
      fun draw(poolName: String, uuid: UUID): Card? {
-        val threeSmallGuarantee = GenshinDrawcard2.cardDrawDetailManager.getCount(uuid, "三星小保底次数")
-        val fourSmallGuarantee = GenshinDrawcard2.cardDrawDetailManager.getCount(uuid, "四星小保底次数")
-        val fiveSmallGuarantee = GenshinDrawcard2.cardDrawDetailManager.getCount(uuid, "五星小保底次数")
-        val threeBigGuarantee = GenshinDrawcard2.cardDrawDetailManager.isTriggerBigGuarantee(uuid, "三星大保底触发")
-        val fourBigGuarantee = GenshinDrawcard2.cardDrawDetailManager.isTriggerBigGuarantee(uuid, "四星大保底触发")
-        val fiveBigGuarantee = GenshinDrawcard2.cardDrawDetailManager.isTriggerBigGuarantee(uuid, "五星大保底触发")
+        val threeSmallGuarantee = GenshinDrawcard2.cardDrawDetailManager.getCount(uuid, poolName,"三星小保底次数")
+        val fourSmallGuarantee = GenshinDrawcard2.cardDrawDetailManager.getCount(uuid, poolName,"四星小保底次数")
+        val fiveSmallGuarantee = GenshinDrawcard2.cardDrawDetailManager.getCount(uuid, poolName,"五星小保底次数")
+        val threeBigGuarantee = GenshinDrawcard2.cardDrawDetailManager.isTriggerBigGuarantee(uuid, poolName,"三星大保底触发")
+        val fourBigGuarantee = GenshinDrawcard2.cardDrawDetailManager.isTriggerBigGuarantee(uuid, poolName,"四星大保底触发")
+        val fiveBigGuarantee = GenshinDrawcard2.cardDrawDetailManager.isTriggerBigGuarantee(uuid, poolName,"五星大保底触发")
 
         val pool = GenshinDrawcard2.cardPoolManager[poolName] ?: return null
         val result = smallGuarantee(
@@ -48,7 +52,7 @@ internal object DrawCardRealizer: BaseRealizer ("抽卡实现器") {
             fiveBigGuarantee
         )
 
-        afterGuarantee(uuid, result)
+        afterGuarantee(uuid, result, poolName)
         return result
 
     }
@@ -56,7 +60,7 @@ internal object DrawCardRealizer: BaseRealizer ("抽卡实现器") {
     /**
      * 保底机制后
      */
-    private fun afterGuarantee (uuid: UUID, card: Card?)
+    private fun afterGuarantee (uuid: UUID, card: Card?, poolName: String)
     {
         card?.let {
             val countDetailName: String
@@ -81,14 +85,25 @@ internal object DrawCardRealizer: BaseRealizer ("抽卡实现器") {
                     bigGuaranteeDetailName = "四星大保底触发"
                 }
             }
-            GenshinDrawcard2.cardDrawDetailManager.setTriggerBigGuarantee(uuid, bigGuaranteeDetailName,!it.isUp)
-            GenshinDrawcard2.cardDrawDetailManager.addCount(uuid, smallGuaranteeDetailName,1)
-            GenshinDrawcard2.cardDrawDetailManager.addCount(uuid, countDetailName,1)
-            GenshinDrawcard2.cardDrawDetailManager.addCount(uuid, "抽卡总次数", 1)
+            GenshinDrawcard2.cardDrawDetailManager.setTriggerBigGuarantee(uuid, poolName, bigGuaranteeDetailName,!it.isUp)
+            GenshinDrawcard2.cardDrawDetailManager.addCount(uuid, poolName, smallGuaranteeDetailName,1)
+            GenshinDrawcard2.cardDrawDetailManager.addCount(uuid, poolName, countDetailName,1)
+            GenshinDrawcard2.cardDrawDetailManager.addCount(uuid, poolName, "抽卡总次数", 1)
 
             val recordCardEvent = RecordCardEvent (it.clone ())
             recordCardEvent.call()
-            GenshinDrawcard2.cardDrawDetailManager.addCardRecord(uuid,recordCardEvent.recordCard)
+
+            submit (async = true){
+
+                    GenshinDrawcard2.cardDrawDetailManager[uuid]!!.forEach { detail ->
+                        if (detail.key == poolName)
+                        {
+                            GenshinDrawCard2Database.updatePlayerDrawCount(uuid.player()!!, detail)
+                        }
+                    }
+
+                GenshinDrawCard2Database.insertRecord(uuid.player()!!,recordCardEvent.recordCard,  SimpleDateFormat ("yyyy-MM-dd HH:mm:ss").format(Date()).toString())
+            }
         }
     }
 
@@ -111,18 +126,18 @@ internal object DrawCardRealizer: BaseRealizer ("抽卡实现器") {
     private fun smallGuarantee(pool: CardPool, uuid: UUID, threeSmallGuarantee: Int, fourSmallGuarantee: Int, fiveSmallGuarantee: Int, threeBigGuarantee: Boolean, fourBigGuarantee: Boolean, fiveBigGuarantee: Boolean): Card? {
         if (fiveSmallGuarantee +1 == pool.fiveSmallGuaranteeCount)
         {
-            GenshinDrawcard2.cardDrawDetailManager.clearCount(uuid, "五星小保底次数")
+            GenshinDrawcard2.cardDrawDetailManager.clearCount(uuid, pool.key,  "五星小保底次数")
             return bigGuarantee(pool, CardStarGrade.FIVE_STAR, threeBigGuarantee)
         }
         if (fourSmallGuarantee +1 == pool.fourSmallGuaranteeCount)
         {
-            GenshinDrawcard2.cardDrawDetailManager.clearCount(uuid, "四星小保底次数")
+            GenshinDrawcard2.cardDrawDetailManager.clearCount(uuid, pool.key,  "四星小保底次数")
             return  bigGuarantee(pool, CardStarGrade.FOUR_STAR, fourBigGuarantee)
         }
 
         if (threeSmallGuarantee +1 == pool.threeSmallGuaranteeCount)
         {
-            GenshinDrawcard2.cardDrawDetailManager.clearCount(uuid, "三星小保底次数")
+            GenshinDrawcard2.cardDrawDetailManager.clearCount(uuid, pool.key,  "三星小保底次数")
             return  bigGuarantee(pool, CardStarGrade.THREE_STAR, fiveBigGuarantee)
         }
 

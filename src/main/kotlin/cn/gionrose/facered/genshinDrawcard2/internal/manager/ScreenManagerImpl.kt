@@ -7,6 +7,7 @@ import cn.gionrose.facered.genshinDrawcard2.api.card.Screen
 import cn.gionrose.facered.genshinDrawcard2.api.event.ScreenLoadEvent
 import cn.gionrose.facered.genshinDrawcard2.api.manager.ScreenManager
 import cn.gionrose.facered.genshinDrawcard2.internal.manager.GenshinDrawcard2ConfigManagerImpl.debug
+import org.bukkit.Material
 import taboolib.common.platform.function.console
 import taboolib.module.lang.sendLang
 
@@ -89,12 +90,14 @@ object ScreenManagerImpl: ScreenManager () {
     private fun Screen.parseLayout ()
     {
         val slotItem = this.layout.split(",")
+        this.slots.clear()
         for (index in slotItem.indices)
         {
             val name = slotItem[index]
 
             if(name.contains("card"))
             {
+
                 this.slots.add(index)
             }else if(name.contains("next||"))
             {
@@ -135,6 +138,7 @@ object ScreenManagerImpl: ScreenManager () {
     override fun onActive() {
         ScreenLoadEvent ().call()
         var screenManager = GenshinDrawcard2.screenManager
+        Material.GRAY_STAINED_GLASS_PANE
 //        GenshinDrawcard2.screenManager.apply {
 //            registerScreen(pool, Screen("1", 6,"肥牛", "三星_展示动画", pool))
 //            registerScreen(pool, Screen("2", 6,"肥牛,肥牛", "三星_展示动画", pool))

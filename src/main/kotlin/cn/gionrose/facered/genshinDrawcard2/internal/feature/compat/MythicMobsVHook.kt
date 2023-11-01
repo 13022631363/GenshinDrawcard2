@@ -57,6 +57,7 @@ internal object MythicMobsVHook: BaseRealizer ("mythicMobsVHook"), Awakeable{
         {
             console().sendMessage(""" &4前置 &9[ &MythicMobsV &9] &4插件未加载 &9, &4请检查... """)
             return defaultItem.clone ()
+
         }
 
         return MythicBukkit.inst().itemManager.getItemStack(name) ?: defaultItem.clone ()

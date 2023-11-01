@@ -3,7 +3,7 @@ package cn.gionrose.facered.genshinDrawcard2.internal.command
 import cn.gionrose.facered.genshinDrawcard2.GenshinDrawcard2
 import cn.gionrose.facered.genshinDrawcard2.api.card.Card
 import cn.gionrose.facered.genshinDrawcard2.api.card.CardStarGrade
-import cn.gionrose.facered.genshinDrawcard2.internal.feature.compat.NeigeItemHook
+import cn.gionrose.facered.genshinDrawcard2.internal.feature.database.GenshinDrawCard2Database
 import cn.gionrose.facered.genshinDrawcard2.internal.feature.realizer.card.CardAnimationScreenRealizer
 import cn.gionrose.facered.genshinDrawcard2.internal.feature.realizer.card.CardDisplayScreenRealizer
 import cn.gionrose.facered.genshinDrawcard2.internal.feature.realizer.card.DrawCardRealizer
@@ -66,8 +66,8 @@ internal object GenshinDrawcard2Command {
             }
         }
     }
-
-    @CommandBody (permission = "genshindrawcard2.command.preview")
+//
+    @CommandBody (permission = "genshindrawcard2.command.record")
     val record = subCommand {
 
         dynamic("玩家名") {
@@ -80,7 +80,7 @@ internal object GenshinDrawcard2Command {
                 }
                 execute<Player>{_, context, _ ->
                     val player = context["玩家名"].getPlayer()!!
-                    val records = GenshinDrawcard2.cardDrawDetailManager.getCardRecord(player.uniqueId).toMutableList()
+                    val records = GenshinDrawCard2Database.selectRecord(player).toMutableList()
                     val pool = GenshinDrawcard2.cardPoolManager[context["卡片池名"]]!!
                     val cardDisplayScreenRealizer =
                         GenshinDrawcard2.realizerManager["展示界面实现器"]!! as CardDisplayScreenRealizer
@@ -109,21 +109,19 @@ internal object GenshinDrawcard2Command {
 
                            for (count in 0 until context["抽卡次数"].toInt ())
                            {
-
-                               (GenshinDrawcard2.realizerManager["抽卡实现器"] as DrawCardRealizer).draw("基础奖池", player.uniqueId)?.let {
+                               (GenshinDrawcard2.realizerManager["抽卡实现器"] as DrawCardRealizer).draw(context["卡片池名"], player.uniqueId)?.let {
                                    drawedCards.add(it)
                                    println("抽卡结果 => ${it.key}")
                                }
                            }
+                           GenshinDrawCard2Database.ifCount100DeleteOldRecord(player)
 
                            (GenshinDrawcard2.realizerManager["动画界面实现器"] as CardAnimationScreenRealizer).show(player, GenshinDrawcard2.cardPoolManager[context["卡片池名"]]!!, drawedCards)
-
-
 
                            player.sendMessage("抽卡...")
 
                            GenshinDrawcard2.cardDrawDetailManager.apply {
-                               "${player.name} => 抽卡总次数: ${getCount(player.uniqueId, "抽卡总次数")}".apply (player::sendMessage)
+                               "${player.name} => 抽卡总次数: ${getCount(player.uniqueId, context["卡片池名"], "抽卡总次数")}".apply (player::sendMessage)
                            }
                        }
 
@@ -141,10 +139,5 @@ internal object GenshinDrawcard2Command {
             sender.sendLang("command-debug-${if (GenshinDrawcard2.configManager.debugMode) "on" else "off"}")
         }
     }
-    @CommandBody(permission = "genshindrawcard2.command.debug")
-    val get = subCommand {
-        execute<CommandSender>{sender, _, _ ->
-            (sender as Player).inventory.addItem((GenshinDrawcard2.realizerManager["neigeItemHook"] as NeigeItemHook).getNeigeItem("ActionTest"))
-        }
-    }
+
 }

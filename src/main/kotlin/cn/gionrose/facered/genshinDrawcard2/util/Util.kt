@@ -26,3 +26,4 @@ fun List<Card>.getMaxGrade (): CardStarGrade
     }
     return maxGrade
 }
+
