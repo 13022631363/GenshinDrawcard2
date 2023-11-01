@@ -88,7 +88,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
 
 //    implementation("io.github.karlatemp:unsafe-accessor:1.7.0")
-    compileOnly(kotlin("stdlib-jdk8"))
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 tasks.test {
