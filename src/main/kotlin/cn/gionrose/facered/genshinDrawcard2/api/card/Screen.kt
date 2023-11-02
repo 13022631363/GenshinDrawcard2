@@ -8,7 +8,7 @@ import com.skillw.pouvoir.api.plugin.map.component.Registrable
  * @author facered
  * @date 2023/10/10 22:36
  */
-class Screen (val title: String, val row: Int, val layout: String, override val key: String, val pool: CardPool): Registrable<String>
+class Screen (val title: String, val pageSize: Int, val row: Int, val layout: String, override val key: String, val pool: CardPool): Registrable<String>
 {
     /**
      * 可用的格子

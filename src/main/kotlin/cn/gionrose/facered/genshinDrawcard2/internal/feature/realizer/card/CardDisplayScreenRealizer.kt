@@ -28,49 +28,58 @@ internal object CardDisplayScreenRealizer: BaseRealizer("展示界面实现器")
 
     fun show (player: Player, pool: CardPool, drawedCards: MutableList<Card>, screenName: String)
     {
-        val billingScreen = GenshinDrawcard2.screenManager.parseLayout(pool, screenName)[0]
 
+        val allScreen = GenshinDrawcard2.screenManager.parseLayout(pool, screenName)
+        var billingScreen = allScreen[0]
 
-            player.openMenu<Linked<Card>>(billingScreen.title)
-            {
-                rows(billingScreen.row)
+        if (screenName == "结算界面")
+        {
+            allScreen.forEach {
+                if (drawedCards.size == it.pageSize)
+                    billingScreen = it
+            }
+        }
 
-                handLocked(true)
+        player.openMenu<Linked<Card>>(billingScreen.title)
+        {
+            rows(billingScreen.row)
 
-                slots(billingScreen.slots)
+            handLocked(true)
 
-                elements { drawedCards }
+            slots(billingScreen.slots)
 
-                onGenerate { _, element, _, _ ->
-                    element.source
-                }
+            elements { drawedCards }
 
-                billingScreen.nextButton.forEach { (slot, card) ->
-                    setNextPage(slot){_, has ->
-                        if (has)
-                            card.source
-                        else
-                           billingScreen.replaceNextButton[slot]!!.source
-                    }
-                }
+            onGenerate { _, element, _, _ ->
+                element.source
+            }
 
-                billingScreen.prevButton.forEach { (slot, card) ->
-                    setPreviousPage(slot){_, has ->
-                        if (has)
-                            card.source
-                        else
-                            billingScreen.replacePrevButton[slot]!!.source
-                    }
-                }
-
-                billingScreen.fixedSettingButtons.forEach { (slot, card) ->
-                    set(slot, card.source)
-                }
-
-                onClose{
-                    GenshinDrawcard2.screenManager.releaseSlots(pool, "结算界面")
+            billingScreen.nextButton.forEach { (slot, card) ->
+                setNextPage(slot){_, has ->
+                    if (has)
+                        card.source
+                    else
+                        billingScreen.replaceNextButton[slot]!!.source
                 }
             }
+
+            billingScreen.prevButton.forEach { (slot, card) ->
+                setPreviousPage(slot){_, has ->
+                    if (has)
+                        card.source
+                    else
+                        billingScreen.replacePrevButton[slot]!!.source
+                }
+            }
+
+            billingScreen.fixedSettingButtons.forEach { (slot, card) ->
+                set(slot, card.source)
+            }
+
+            onClose{
+                GenshinDrawcard2.screenManager.releaseSlots(pool, "结算界面")
+            }
+        }
 
     }
 

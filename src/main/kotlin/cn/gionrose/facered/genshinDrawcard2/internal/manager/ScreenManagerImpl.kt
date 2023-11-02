@@ -71,8 +71,8 @@ object ScreenManagerImpl: ScreenManager () {
         getScreen(pool, screenName).onEach {it.releaseSlots()}
     }
 
-    override fun createScreen(pool: CardPool, title: String, row: Int, layout: String, key: String): Screen {
-        return Screen (title, row, layout, key, pool)
+    override fun createScreen(pool: CardPool, pageSize: Int, title: String, row: Int, layout: String, key: String): Screen {
+        return Screen (title, pageSize, row, layout, key, pool)
     }
 
 
@@ -90,7 +90,7 @@ object ScreenManagerImpl: ScreenManager () {
     private fun Screen.parseLayout ()
     {
         val slotItem = this.layout.split(",")
-        this.slots.clear()
+        releaseSlots()
         for (index in slotItem.indices)
         {
             val name = slotItem[index]

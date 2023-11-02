@@ -42,5 +42,5 @@ abstract class ScreenManager: BaseMap<CardPool, MutableMap<String, MutableList<S
      */
     abstract fun releaseSlots (pool: CardPool, screenName: String)
 
-    abstract fun createScreen (pool: CardPool, title: String, row: Int, layout: String, key: String): Screen
+    abstract fun createScreen (pool: CardPool, pageSize: Int, title: String, row: Int, layout: String, key: String): Screen
 }

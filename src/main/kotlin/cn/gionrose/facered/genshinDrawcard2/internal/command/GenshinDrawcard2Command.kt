@@ -8,7 +8,6 @@ import cn.gionrose.facered.genshinDrawcard2.internal.feature.realizer.card.CardA
 import cn.gionrose.facered.genshinDrawcard2.internal.feature.realizer.card.CardDisplayScreenRealizer
 import cn.gionrose.facered.genshinDrawcard2.internal.feature.realizer.card.DrawCardRealizer
 import cn.gionrose.facered.genshinDrawcard2.util.getPlayer
-import com.skillw.pouvoir.Pouvoir
 import com.skillw.pouvoir.util.soundSuccess
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -30,7 +29,6 @@ internal object GenshinDrawcard2Command {
     val reload = subCommand {
         execute<CommandSender> { sender, _, _ ->
             sender.sendLang("命令_重载")
-            Pouvoir.reload()
             GenshinDrawcard2.reload()
         }
     }
@@ -47,10 +45,10 @@ internal object GenshinDrawcard2Command {
                     GenshinDrawcard2.cardPoolManager.values.map { it.key }
                 }
                 dynamic("星级") {
-                    suggestion<Player>{_, _ ->
+                    suggestion<CommandSender>{_, _ ->
                         CardStarGrade.values().map { it.level.toString() }
                     }
-                    execute<Player>{_, context, _ ->
+                    execute<CommandSender>{_, context, _ ->
                         val pool = GenshinDrawcard2.cardPoolManager[context["卡片池名"]]!!
                         GenshinDrawcard2.starGradeContainerManager.getContainer(pool).values().forEach { container ->
                             if (container.element.grade == CardStarGrade.getStarGrade(context["星级"].cint))
@@ -76,10 +74,10 @@ internal object GenshinDrawcard2Command {
                 onlinePlayers.map { it.name }
             }
             dynamic("卡片池名") {
-                suggestion<Player> { _, _ ->
+                suggestion<CommandSender> { _, _ ->
                     GenshinDrawcard2.cardPoolManager.values.map { it.key }
                 }
-                execute<Player>{_, context, _ ->
+                execute<CommandSender>{_, context, _ ->
                     val player = context["玩家名"].getPlayer()!!
                     val records = GenshinDrawCard2Database.selectRecord(player).toMutableList()
                     val pool = GenshinDrawcard2.cardPoolManager[context["卡片池名"]]!!

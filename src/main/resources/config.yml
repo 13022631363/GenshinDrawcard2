@@ -1,16 +1,6 @@
 database:
-  type: mongoDB
-  # sqlite的path
-  path:
-  enable: true
-  host: localhost
-  port: 27017
-  user:
-  password:
-  database: drawcard_detail
-  table: '抽卡详情'
-  #每10分钟同步一次 （tick）
-  user-container-sync-time: 1200
-
+  url: jdbc:mysql://localhost:3306/mysqlminecraft
+  username: facered
+  password: 123sjh
 options:
-  debug: false
+  debug: true

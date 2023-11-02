@@ -3,10 +3,13 @@ package cn.gionrose.facered.genshinDrawcard2.internal.feature.personal
 import cn.gionrose.facered.genshinDrawcard2.GenshinDrawcard2
 import cn.gionrose.facered.genshinDrawcard2.api.card.CardDrawDetail
 import cn.gionrose.facered.genshinDrawcard2.internal.feature.database.GenshinDrawCard2Database
+import cn.gionrose.facered.genshinDrawcard2.internal.manager.GenshinDrawcard2ConfigManagerImpl.debug
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
+import taboolib.common.platform.function.console
+import taboolib.module.lang.sendLang
 
 /**
  * @description 抽卡信息存储和获取
@@ -19,6 +22,9 @@ private object DrawCardDetailSaveAndGet {
     fun quit(event: PlayerQuitEvent) {
         val player = event.player
         GenshinDrawcard2.cardDrawDetailManager.unregisterDetail(player.uniqueId)
+        debug{
+            console().sendLang("玩家抽卡详情_移除", player.name)
+        }
     }
 
     @SubscribeEvent(EventPriority.LOWEST)
@@ -28,6 +34,9 @@ private object DrawCardDetailSaveAndGet {
             GenshinDrawcard2.cardPoolManager.values.map { it.key }.forEach {
                 details = GenshinDrawcard2.cardDrawDetailManager[player.uniqueId]!!
                 details.add(CardDrawDetail(it))
+                debug{
+                    console().sendLang("玩家抽卡详情_添加", player.name, it)
+                }
             }
         GenshinDrawcard2.cardPoolManager.values.map { it.key }.forEach { poolName ->
             val cardDrawDetail = GenshinDrawCard2Database.selectPlayerDrawCount(player, poolName)
@@ -36,6 +45,9 @@ private object DrawCardDetailSaveAndGet {
                     if (databaseDetail.key == detail.key)
                     {
                         detail.coverOf(databaseDetail)
+                        debug{
+                            console().sendLang("玩家抽卡详情_恢复", player.name, poolName)
+                        }
                     }
                 }
             }
