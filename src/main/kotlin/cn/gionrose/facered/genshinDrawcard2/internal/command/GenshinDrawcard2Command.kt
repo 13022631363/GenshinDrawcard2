@@ -8,6 +8,7 @@ import cn.gionrose.facered.genshinDrawcard2.internal.feature.realizer.card.CardA
 import cn.gionrose.facered.genshinDrawcard2.internal.feature.realizer.card.CardDisplayScreenRealizer
 import cn.gionrose.facered.genshinDrawcard2.internal.feature.realizer.card.DrawCardRealizer
 import cn.gionrose.facered.genshinDrawcard2.util.getPlayer
+import com.skillw.pouvoir.Pouvoir
 import com.skillw.pouvoir.util.soundSuccess
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -28,8 +29,8 @@ internal object GenshinDrawcard2Command {
     @CommandBody(permission = "genshindrawcard2.command.reload")
     val reload = subCommand {
         execute<CommandSender> { sender, _, _ ->
-            (sender as? Player?)?.soundSuccess()
             sender.sendLang("命令_重载")
+            Pouvoir.reload()
             GenshinDrawcard2.reload()
         }
     }
@@ -66,7 +67,7 @@ internal object GenshinDrawcard2Command {
             }
         }
     }
-//
+
     @CommandBody (permission = "genshindrawcard2.command.record")
     val record = subCommand {
 
