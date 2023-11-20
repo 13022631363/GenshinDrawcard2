@@ -51,6 +51,8 @@ private object DrawCardDetailSaveAndGet {
                     }
                 }
             }
+            if (cardDrawDetail == null)
+                GenshinDrawCard2Database.initPlayerDrawCount(player, poolName)
         }
     }
 

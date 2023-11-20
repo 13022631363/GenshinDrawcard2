@@ -61,12 +61,6 @@ object GenshinDrawcard2: Plugin(), SubPouvoir {
     override fun onEnable() {
         enable()
         GenshinDrawCard2Database.createTable()
-        println(plugin.server.version)
-//        submitAsync (period = 1200){
-//            onlinePlayers.forEach {player ->
-//                cardDrawDetailManager[player.uniqueId]?.let { GenshinDrawCard2Database.update(player.uniqueId, it) }
-//            }
-//        }
     }
 
     override fun onActive() {

@@ -36,7 +36,7 @@ object GenshinDrawCard2Database{
                         "        uuid varchar(100),\n" +
                         "        username varchar(64),\n" +
                         "        `date` datetime,\n" +
-                        "        record varchar (1000)\n" +
+                        "        record text \n" +
                         ");").execute()
             }
         }catch (e: ExceptionInInitializerError)
@@ -60,7 +60,7 @@ object GenshinDrawCard2Database{
     {
         try {
             MysqlWrapper.connection().use {connext ->
-                connext.prepareStatement("insert into genshindrawcard_count values (?,?,?,?,?,?,?,?,?,?,?,?,?,?);").apply {
+                connext.prepareStatement("insert into genshindrawcard_count values (?,?,?,?,?,?,?,?,?,?,?,?,?);").apply {
                     setString(1, player.uniqueId.toString())
                     setString(2, player.name)
                     setString (3, poolName)
@@ -166,7 +166,6 @@ object GenshinDrawCard2Database{
                     setString(3, date)
                     setString(4, Gson ().toJson(record.serialize()))
                 }.execute ()
-                println("添加数据库一次")
             }
         }catch (e: ExceptionInInitializerError)
         {
@@ -180,7 +179,7 @@ object GenshinDrawCard2Database{
         val result = mutableListOf<Card>()
         try {
             MysqlWrapper.connection().use {connext ->
-                connext.prepareStatement("select record from genshindrawcard_draw_record where uuid = ? AND username = ? order by `date`;").apply {
+                connext.prepareStatement("select record from genshindrawcard_draw_record where uuid = ? AND username = ? order by `date` desc;").apply {
                     setString(1, player.uniqueId.toString())
                     setString(2, player.name)
                 }.executeQuery().apply {
@@ -214,13 +213,11 @@ object GenshinDrawCard2Database{
                 }
                 if (recordCount >= 100)
                 {
-                    println(recordCount - 100)
                     val row = connext.prepareStatement("delete from genshindrawcard_draw_record where date in (SELECT r1.date FROM (SELECT * FROM genshindrawcard_draw_record where username = ? AND uuid = ? ORDER BY `date`)  AS r1) LIMIT ?;").apply {
                         setString(1, player.name)
                         setString(2, player.uniqueId.toString())
                         setInt (3, recordCount - 100)
                     }.executeUpdate()
-                    println("修改次行数 =》 $row")
                 }
 
             }
@@ -230,6 +227,20 @@ object GenshinDrawCard2Database{
         }
     }
 
+    fun deleteCountByPoolName (poolName: String)
+    {
+
+        try {
+            MysqlWrapper.connection().use {connext ->
+                connext.prepareStatement("delete from genshindrawcard_count where pool_name = ?;").apply {
+                    setString(1, poolName)
+                }.execute()
+            }
+        }catch (e: ExceptionInInitializerError)
+        {
+            throw RuntimeException ("请配置好数据库信息 ...")
+        }
+    }
 
 
 }

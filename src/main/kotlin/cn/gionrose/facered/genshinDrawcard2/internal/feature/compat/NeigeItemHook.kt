@@ -57,7 +57,6 @@ internal object NeigeItemHook:  BaseRealizer ("neigeItemHook"), Awakeable{
             console().sendMessage(""" &4前置 &9[ &fNeigeItems &9] &4插件未加载 &9, &4请检查... """)
             return defaultItem.clone ()
         }
-
         return ItemManager.getItemStack(id)?: defaultItem.clone ()
 
     }

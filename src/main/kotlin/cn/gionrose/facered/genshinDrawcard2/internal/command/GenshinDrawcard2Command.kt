@@ -110,18 +110,15 @@ internal object GenshinDrawcard2Command {
                            {
                                (GenshinDrawcard2.realizerManager["抽卡实现器"] as DrawCardRealizer).draw(context["卡片池名"], player.uniqueId)?.let {
                                    drawedCards.add(it)
-                                   println("抽卡结果 => ${it.key}")
                                }
                            }
                            GenshinDrawCard2Database.ifCount100DeleteOldRecord(player)
 
                            (GenshinDrawcard2.realizerManager["动画界面实现器"] as CardAnimationScreenRealizer).show(player, GenshinDrawcard2.cardPoolManager[context["卡片池名"]]!!, drawedCards)
 
-                           player.sendMessage("抽卡...")
-
-                           GenshinDrawcard2.cardDrawDetailManager.apply {
-                               "${player.name} => 抽卡总次数: ${getCount(player.uniqueId, context["卡片池名"], "抽卡总次数")}".apply (player::sendMessage)
-                           }
+//                           GenshinDrawcard2.cardDrawDetailManager.apply {
+//                               "${player.name} => 抽卡总次数: ${getCount(player.uniqueId, context["卡片池名"], "抽卡总次数")}".apply (player::sendMessage)
+//                           }
                        }
 
                    }
@@ -136,6 +133,19 @@ internal object GenshinDrawcard2Command {
             (sender as? Player?)?.soundSuccess()
             GenshinDrawcard2.configManager.debugMode = !GenshinDrawcard2.configManager.debugMode
             sender.sendLang("command-debug-${if (GenshinDrawcard2.configManager.debugMode) "on" else "off"}")
+        }
+    }
+
+    @CommandBody(permission = "genshindrawcard.command.deleteCountByPoolName")
+    val deleteCountByPoolName = subCommand {
+        dynamic("奖池名") {
+            suggestion<CommandSender>{_, _ ->
+                GenshinDrawcard2.cardPoolManager.values.map { it.key }
+            }
+            execute<CommandSender> { _, context, _ ->
+                GenshinDrawCard2Database.deleteCountByPoolName(context["奖池名"])
+
+            }
         }
     }
 

@@ -3,6 +3,8 @@ package cn.gionrose.facered.genshinDrawcard2.internal.feature.realizer.card
 import cn.gionrose.facered.genshinDrawcard2.GenshinDrawcard2
 import cn.gionrose.facered.genshinDrawcard2.api.card.Card
 import cn.gionrose.facered.genshinDrawcard2.api.card.CardPool
+import cn.gionrose.facered.genshinDrawcard2.api.event.BillingScreenCloseEvent
+import cn.gionrose.facered.genshinDrawcard2.api.event.BillingScreenOpenEvent
 import com.skillw.pouvoir.api.feature.realizer.BaseRealizer
 import com.skillw.pouvoir.api.feature.realizer.BaseRealizerManager
 import com.skillw.pouvoir.api.feature.realizer.component.Awakeable
@@ -34,6 +36,7 @@ internal object CardDisplayScreenRealizer: BaseRealizer("展示界面实现器")
 
         if (screenName == "结算界面")
         {
+            BillingScreenOpenEvent(player).call()
             allScreen.forEach {
                 if (drawedCards.size == it.pageSize)
                     billingScreen = it
@@ -77,6 +80,8 @@ internal object CardDisplayScreenRealizer: BaseRealizer("展示界面实现器")
             }
 
             onClose{
+                if(screenName == "结算界面")
+                    BillingScreenCloseEvent (player).call()
                 GenshinDrawcard2.screenManager.releaseSlots(pool, "结算界面")
             }
         }

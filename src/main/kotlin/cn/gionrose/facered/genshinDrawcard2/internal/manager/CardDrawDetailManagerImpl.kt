@@ -37,7 +37,7 @@ object CardDrawDetailManagerImpl: CardDrawDetailManager() {
         this[uuid].forEach {
             if (it.key == poolName)
             {
-                it[detailName] = 0
+                it[detailName] = -1
             }
         }
     }

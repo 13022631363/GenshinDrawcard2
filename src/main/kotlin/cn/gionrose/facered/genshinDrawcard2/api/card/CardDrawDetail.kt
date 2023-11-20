@@ -42,11 +42,6 @@ class CardDrawDetail(override val key: String) : LowerMap<Any>(), Keyable<String
         result["五星大保底触发"] = this["五星大保底触发"]!!
         result["抽卡总次数"] = this["抽卡总次数"]!!
 
-        //todo
-        result.forEach { t, u ->
-            println ("$t ==> $u")
-        }
-
         return result
     }
 
@@ -97,7 +92,6 @@ class CardDrawDetail(override val key: String) : LowerMap<Any>(), Keyable<String
                 this["抽卡总次数"] = detail["抽卡总次数"]!!
 
             }
-            println(result)
             return result
         }
     }

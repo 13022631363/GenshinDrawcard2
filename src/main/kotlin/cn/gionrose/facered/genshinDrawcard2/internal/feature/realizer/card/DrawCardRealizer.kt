@@ -70,23 +70,22 @@ internal object DrawCardRealizer: BaseRealizer ("抽卡实现器") {
             {
                 CardStarGrade.FIVE_STAR -> {
                     countDetailName = "五星抽卡总次数"
-                    smallGuaranteeDetailName = "五星小保底次数"
                     bigGuaranteeDetailName = "五星大保底触发"
                 }
 
                 CardStarGrade.THREE_STAR -> {
                     countDetailName = "三星抽卡总次数"
-                    smallGuaranteeDetailName = "三星小保底次数"
                     bigGuaranteeDetailName = "三星大保底触发"
                 }
                 CardStarGrade.FOUR_STAR -> {
                     countDetailName = "四星抽卡总次数"
-                    smallGuaranteeDetailName = "四星小保底次数"
                     bigGuaranteeDetailName = "四星大保底触发"
                 }
             }
             GenshinDrawcard2.cardDrawDetailManager.setTriggerBigGuarantee(uuid, poolName, bigGuaranteeDetailName,!it.isUp)
-            GenshinDrawcard2.cardDrawDetailManager.addCount(uuid, poolName, smallGuaranteeDetailName,1)
+            GenshinDrawcard2.cardDrawDetailManager.addCount(uuid, poolName, "五星小保底次数",1)
+            GenshinDrawcard2.cardDrawDetailManager.addCount(uuid, poolName, "三星小保底次数",1)
+            GenshinDrawcard2.cardDrawDetailManager.addCount(uuid, poolName, "四星小保底次数",1)
             GenshinDrawcard2.cardDrawDetailManager.addCount(uuid, poolName, countDetailName,1)
             GenshinDrawcard2.cardDrawDetailManager.addCount(uuid, poolName, "抽卡总次数", 1)
 
@@ -124,18 +123,18 @@ internal object DrawCardRealizer: BaseRealizer ("抽卡实现器") {
      * 小保底机制
      */
     private fun smallGuarantee(pool: CardPool, uuid: UUID, threeSmallGuarantee: Int, fourSmallGuarantee: Int, fiveSmallGuarantee: Int, threeBigGuarantee: Boolean, fourBigGuarantee: Boolean, fiveBigGuarantee: Boolean): Card? {
-        if (fiveSmallGuarantee +1 == pool.fiveSmallGuaranteeCount)
+        if (fiveSmallGuarantee +1 >= pool.fiveSmallGuaranteeCount)
         {
             GenshinDrawcard2.cardDrawDetailManager.clearCount(uuid, pool.key,  "五星小保底次数")
             return bigGuarantee(pool, CardStarGrade.FIVE_STAR, threeBigGuarantee)
         }
-        if (fourSmallGuarantee +1 == pool.fourSmallGuaranteeCount)
+        if (fourSmallGuarantee +1 >= pool.fourSmallGuaranteeCount)
         {
             GenshinDrawcard2.cardDrawDetailManager.clearCount(uuid, pool.key,  "四星小保底次数")
             return  bigGuarantee(pool, CardStarGrade.FOUR_STAR, fourBigGuarantee)
         }
 
-        if (threeSmallGuarantee +1 == pool.threeSmallGuaranteeCount)
+        if (threeSmallGuarantee +1 >= pool.threeSmallGuaranteeCount)
         {
             GenshinDrawcard2.cardDrawDetailManager.clearCount(uuid, pool.key,  "三星小保底次数")
             return  bigGuarantee(pool, CardStarGrade.THREE_STAR, fiveBigGuarantee)
