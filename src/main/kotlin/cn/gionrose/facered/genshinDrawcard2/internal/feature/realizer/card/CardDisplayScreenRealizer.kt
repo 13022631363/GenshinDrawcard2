@@ -81,7 +81,7 @@ internal object CardDisplayScreenRealizer: BaseRealizer("展示界面实现器")
 
             onClose{
                 if(screenName == "结算界面")
-                    BillingScreenCloseEvent (player).call()
+                    BillingScreenCloseEvent (player, pool.key).call()
                 GenshinDrawcard2.screenManager.releaseSlots(pool, "结算界面")
             }
         }

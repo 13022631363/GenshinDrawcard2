@@ -8,5 +8,5 @@ import taboolib.platform.type.BukkitProxyEvent
  * @author facered
  * @date 2023/11/4 21:28
  */
-class BillingScreenCloseEvent(player: Player): BukkitProxyEvent() {
+class BillingScreenCloseEvent(player: Player, poolName: String): BukkitProxyEvent() {
 }
