@@ -2,7 +2,7 @@ package cn.gionrose.facered.genshinDrawcard2
 
 //import cn.gionrose.facered.genshinDrawcard2.internal.feature.personal.PersonalDrawCardDetailData
 import cn.gionrose.facered.genshinDrawcard2.api.manager.*
-import cn.gionrose.facered.genshinDrawcard2.internal.feature.database.GenshinDrawCard2Database
+import cn.gionrose.facered.genshinDrawcard2.internal.feature.database.MysqlWrapper
 import cn.gionrose.facered.genshinDrawcard2.internal.manager.GenshinDrawcard2ConfigManagerImpl
 import com.skillw.pouvoir.api.manager.ManagerData
 import com.skillw.pouvoir.api.plugin.SubPouvoir
@@ -60,7 +60,9 @@ object GenshinDrawcard2: Plugin(), SubPouvoir {
 
     override fun onEnable() {
         enable()
-        GenshinDrawCard2Database.createTable()
+        MysqlWrapper.drawCardCountTable.createTable(MysqlWrapper.dataSource)
+        MysqlWrapper.drawCardRecord.createTable(MysqlWrapper.dataSource)
+
     }
 
     override fun onActive() {

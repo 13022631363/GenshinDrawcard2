@@ -1,13 +1,45 @@
 
+import io.izzel.taboolib.gradle.*
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.8.21"
-    id("io.izzel.taboolib") version "1.56"
+    id("io.izzel.taboolib") version "2.0.11"
 //    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
-val taboolibVersion: String by project
+taboolib {
+    env {
+        install(
+            BUKKIT_ALL,
+            UNIVERSAL,
+            UI,
+            DATABASE,
+            CONFIGURATION
+        )
+    }
+
+
+    description {
+        contributors {
+            name("facered")
+        }
+        dependencies {
+            bukkitApi("1.13")
+            name("PlaceholderAPI").optional(true)
+            name("MythicMobs").optional(true)
+            name("NeigeItems").optional (true)
+            name("Pouvoir")
+        }
+        relocate("ink.ptms.um", "ink.ptms.chemdah.um")
+    }
+
+    // relocate("com.google.gson", "com.google.gson2_9_1")
+    classifier = null
+    version{
+        taboolib = "6.1.1-beta17"
+    }
+}
 
 repositories {
     mavenLocal ()
@@ -33,36 +65,6 @@ repositories {
 //    }
 }
 
-taboolib {
-    install(
-        "common",
-        "common-5",
-        "platform-bukkit",
-        "module-configuration",
-        "module-chat",
-        "module-lang",
-        "module-ui",
-        "expansion-player-database",
-        "module-database"
-    )
-    description {
-        contributors {
-            name("facered")
-        }
-        dependencies {
-            bukkitApi("1.13")
-            name("PlaceholderAPI").optional(true)
-            name("MythicMobs").optional(true)
-            name("NeigeItems").optional (true)
-            name("Pouvoir")
-        }
-
-    }
-
-    // relocate("com.google.gson", "com.google.gson2_9_1")
-    classifier = null
-    version = taboolibVersion
-}
 
 
 
@@ -80,8 +82,6 @@ dependencies {
     compileOnly("com.zaxxer:HikariCP:4.0.3")
     //papi 插件
     compileOnly("me.clip:placeholderapi:2.10.9") { isTransitive = false }
-    //aviator脚本
-    implementation("com.googlecode.aviator:aviator:5.3.3")
 
 //    compileOnly(kotlin("stdlib"))
 
@@ -98,7 +98,4 @@ tasks.test {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
-}
-tasks.withType<Jar> ().configureEach {
-    destinationDirectory.set(File ("F:\\mc\\mcPaperServer\\plugins"))
 }

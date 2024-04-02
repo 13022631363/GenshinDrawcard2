@@ -2,7 +2,7 @@ package cn.gionrose.facered.genshinDrawcard2.internal.feature.personal
 
 import cn.gionrose.facered.genshinDrawcard2.GenshinDrawcard2
 import cn.gionrose.facered.genshinDrawcard2.api.card.CardDrawDetail
-import cn.gionrose.facered.genshinDrawcard2.internal.feature.database.GenshinDrawCard2Database
+import cn.gionrose.facered.genshinDrawcard2.internal.feature.database.MysqlWrapper
 import cn.gionrose.facered.genshinDrawcard2.internal.manager.GenshinDrawcard2ConfigManagerImpl.debug
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
@@ -39,7 +39,7 @@ private object DrawCardDetailSaveAndGet {
                 }
             }
         GenshinDrawcard2.cardPoolManager.values.map { it.key }.forEach { poolName ->
-            val cardDrawDetail = GenshinDrawCard2Database.selectPlayerDrawCount(player, poolName)
+            val cardDrawDetail = MysqlWrapper.selectPlayerDrawCount(player, poolName)
             cardDrawDetail?.let {databaseDetail ->
                 details.forEach {detail ->
                     if (databaseDetail.key == detail.key)
@@ -52,7 +52,7 @@ private object DrawCardDetailSaveAndGet {
                 }
             }
             if (cardDrawDetail == null)
-                GenshinDrawCard2Database.initPlayerDrawCount(player, poolName)
+                MysqlWrapper.initPlayerDrawCount(player, poolName)
         }
     }
 

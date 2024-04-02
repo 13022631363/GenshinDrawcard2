@@ -3,7 +3,7 @@ package cn.gionrose.facered.genshinDrawcard2.internal.command
 import cn.gionrose.facered.genshinDrawcard2.GenshinDrawcard2
 import cn.gionrose.facered.genshinDrawcard2.api.card.Card
 import cn.gionrose.facered.genshinDrawcard2.api.card.CardStarGrade
-import cn.gionrose.facered.genshinDrawcard2.internal.feature.database.GenshinDrawCard2Database
+import cn.gionrose.facered.genshinDrawcard2.internal.feature.database.MysqlWrapper
 import cn.gionrose.facered.genshinDrawcard2.internal.feature.realizer.card.CardAnimationScreenRealizer
 import cn.gionrose.facered.genshinDrawcard2.internal.feature.realizer.card.CardDisplayScreenRealizer
 import cn.gionrose.facered.genshinDrawcard2.internal.feature.realizer.card.DrawCardRealizer
@@ -79,7 +79,7 @@ internal object GenshinDrawcard2Command {
                 }
                 execute<CommandSender>{_, context, _ ->
                     val player = context["玩家名"].getPlayer()!!
-                    val records = GenshinDrawCard2Database.selectRecord(player).toMutableList()
+                    val records = MysqlWrapper.selectRecord(player).toMutableList()
                     val pool = GenshinDrawcard2.cardPoolManager[context["卡片池名"]]!!
                     val cardDisplayScreenRealizer =
                         GenshinDrawcard2.realizerManager["展示界面实现器"]!! as CardDisplayScreenRealizer
@@ -112,7 +112,7 @@ internal object GenshinDrawcard2Command {
                                    drawedCards.add(it)
                                }
                            }
-                           GenshinDrawCard2Database.ifCount100DeleteOldRecord(player)
+                           MysqlWrapper.ifCount100DeleteOldRecord(player)
 
                            (GenshinDrawcard2.realizerManager["动画界面实现器"] as CardAnimationScreenRealizer).show(player, GenshinDrawcard2.cardPoolManager[context["卡片池名"]]!!, drawedCards)
 
@@ -143,7 +143,7 @@ internal object GenshinDrawcard2Command {
                 GenshinDrawcard2.cardPoolManager.values.map { it.key }
             }
             execute<CommandSender> { _, context, _ ->
-                GenshinDrawCard2Database.deleteCountByPoolName(context["奖池名"])
+                MysqlWrapper.deleteCountByPoolName(context["奖池名"])
 
             }
         }

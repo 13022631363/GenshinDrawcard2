@@ -5,7 +5,7 @@ import cn.gionrose.facered.genshinDrawcard2.api.card.Card
 import cn.gionrose.facered.genshinDrawcard2.api.card.CardPool
 import cn.gionrose.facered.genshinDrawcard2.api.card.CardStarGrade
 import cn.gionrose.facered.genshinDrawcard2.api.event.RecordCardEvent
-import cn.gionrose.facered.genshinDrawcard2.internal.feature.database.GenshinDrawCard2Database
+import cn.gionrose.facered.genshinDrawcard2.internal.feature.database.MysqlWrapper
 import com.skillw.pouvoir.api.feature.realizer.BaseRealizer
 import com.skillw.pouvoir.api.feature.realizer.BaseRealizerManager
 import com.skillw.pouvoir.api.plugin.annotation.AutoRegister
@@ -97,11 +97,11 @@ internal object DrawCardRealizer: BaseRealizer ("抽卡实现器") {
                     GenshinDrawcard2.cardDrawDetailManager[uuid]!!.forEach { detail ->
                         if (detail.key == poolName)
                         {
-                            GenshinDrawCard2Database.updatePlayerDrawCount(uuid.player()!!, detail)
+                            MysqlWrapper.updatePlayerDrawCount(uuid.player()!!, detail)
                         }
                     }
 
-                GenshinDrawCard2Database.insertRecord(uuid.player()!!,recordCardEvent.recordCard,  SimpleDateFormat ("yyyy-MM-dd HH:mm:ss").format(Date()).toString())
+                MysqlWrapper.insertRecord(uuid.player()!!,recordCardEvent.recordCard,  SimpleDateFormat ("yyyy-MM-dd HH:mm:ss").format(Date()).toString())
             }
         }
     }

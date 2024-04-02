@@ -4,6 +4,12 @@ import cn.gionrose.facered.genshinDrawcard2.GenshinDrawcard2
 import com.skillw.pouvoir.api.manager.ConfigManager
 import com.skillw.pouvoir.api.plugin.map.DataMap
 import com.skillw.pouvoir.util.toMap
+import org.bukkit.configuration.file.FileConfiguration
+import taboolib.library.configuration.ConfigurationSection
+import taboolib.module.configuration.ConfigFile
+import taboolib.module.configuration.Configuration
+import taboolib.module.configuration.Type
+import java.io.File
 
 
 /**
@@ -18,8 +24,8 @@ object GenshinDrawcard2ConfigManagerImpl: ConfigManager(GenshinDrawcard2) {
     var debugMode: Boolean = false
     val debug: Boolean
         get() = debugMode || this["config"].getBoolean("options.debug")
-    val databaseConfig: DataMap
-        get() = DataMap().also { it.putAll(this["config"].getConfigurationSection("database")!!.toMap()) }
+
+    val databaseHost = Configuration.loadFromOther(this["config"], Type.YAML).getConfigurationSection("database")
     @JvmStatic
     fun debug(debug: () -> Unit) {
         if (this.debug) {
